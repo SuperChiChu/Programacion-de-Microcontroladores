@@ -1,0 +1,50 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.8</VERSION>
+ <DEVICE>"ATmega328P"</DEVICE>
+ <WORKING_DIR>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc</FILE>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PDEF.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\Debug\Laboratorio 1.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>Laboratorio 1.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>Laboratorio 1.map</FILE>
+  <FILE>Laboratorio 1.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <counter1><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>14</LINE></counter1>
+  <counter2><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>15</LINE></counter2>
+  <SETUP><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>28</LINE></SETUP>
+  <UPDATE_SUM><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>224</LINE></UPDATE_SUM>
+  <MAIN_LOOP><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>91</LINE></MAIN_LOOP>
+  <CONTADOR1_FN><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>98</LINE></CONTADOR1_FN>
+  <CONTADOR2_FN><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>113</LINE></CONTADOR2_FN>
+  <DEBOUNCE_UP><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>125</LINE></DEBOUNCE_UP>
+  <DEBOUNCE_DOWN><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>139</LINE></DEBOUNCE_DOWN>
+  <DEBOUNCE2_UP><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>154</LINE></DEBOUNCE2_UP>
+  <DEBOUNCE_DOWN2><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>168</LINE></DEBOUNCE_DOWN2>
+  <DELAY><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>274</LINE></DELAY>
+  <INC_COUNTER><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>182</LINE></INC_COUNTER>
+  <WAIT_RELEASE_UP><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>132</LINE></WAIT_RELEASE_UP>
+  <DEC_COUNTER><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>192</LINE></DEC_COUNTER>
+  <WAIT_RELEASE_DOWN><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>146</LINE></WAIT_RELEASE_DOWN>
+  <INC_COUNTER2><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>202</LINE></INC_COUNTER2>
+  <WAIT_RELEASE_UP2><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>161</LINE></WAIT_RELEASE_UP2>
+  <DEC_COUNTER2><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>212</LINE></DEC_COUNTER2>
+  <WAIT_RELEASE_DOWN2><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>175</LINE></WAIT_RELEASE_DOWN2>
+  <loopA><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>276</LINE></loopA>
+  <loopB><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>278</LINE></loopB>
+  <loopC><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 1\Laboratorio 1\main.asm</FILE><LINE>280</LINE></loopC>
+ </LABELS>
+</ASSEMBLER_INFO>

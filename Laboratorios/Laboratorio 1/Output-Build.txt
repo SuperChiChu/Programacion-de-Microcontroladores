@@ -1,0 +1,29 @@
+﻿------ Build started: Project: Laboratorio 1, Configuration: Debug AVR ------
+Build started.
+Project "Laboratorio 1.asmproj" (default targets):
+Target "PreBuildEvent" skipped, due to false condition; ('$(PreBuildEvent)'!='') was evaluated as (''!='').
+Target "CoreBuild" in file "C:\Program Files (x86)\Atmel\Studio\7.0\Vs\Assembler.targets" from project "C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorio 0\Laboratorio 1\Laboratorio 1\Laboratorio 1.asmproj" (target "Build" depends on it):
+	Task "RunAssemblerTask"
+		C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\avrasm2.exe -fI -o "Laboratorio 1.hex"  -m "Laboratorio 1.map"  -l "Laboratorio 1.lss"  -S "Laboratorio 1.tmp"  -W+ie -I"C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc"  -im328Pdef.inc -d "C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorio 0\Laboratorio 1\Laboratorio 1\Debug\Laboratorio 1.obj"  "C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorio 0\Laboratorio 1\Laboratorio 1\main.asm"  -I "C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include" 
+		AVRASM: AVR macro assembler 2.2.8 (build 80 Jan 14 2020 18:27:50)
+		Copyright (C) 1995-2020 ATMEL Corporation
+		[builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
+		C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorio 0\Laboratorio 1\Laboratorio 1\main.asm(11): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PDEF.inc'
+		[builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
+		C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorio 0\Laboratorio 1\Laboratorio 1\main.asm(11): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PDEF.inc'
+		"ATmega328P" memory use summary [bytes]:
+		Segment   Begin    End      Code   Data   Used    Size   Use%
+		---------------------------------------------------------------
+		[.cseg] 0x000000 0x000106    262      0    262   32768   0.8%
+		[.dseg] 0x000100 0x000102      0      2      2    2048   0.1%
+		[.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
+		Assembly complete, 0 errors. 0 warnings
+	Done executing task "RunAssemblerTask".
+Done building target "CoreBuild" in project "Laboratorio 1.asmproj".
+Target "PostBuildEvent" skipped, due to false condition; ('$(PostBuildEvent)' != '') was evaluated as ('' != '').
+Target "Build" in file "C:\Program Files (x86)\Atmel\Studio\7.0\Vs\Avr.common.targets" from project "C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorio 0\Laboratorio 1\Laboratorio 1\Laboratorio 1.asmproj" (entry point):
+Done building target "Build" in project "Laboratorio 1.asmproj".
+Done building project "Laboratorio 1.asmproj".
+
+Build succeeded.
+========== Build: 1 succeeded or up-to-date, 0 failed, 0 skipped ==========
