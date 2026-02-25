@@ -1,0 +1,76 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.8</VERSION>
+ <DEVICE>"ATmega328P"</DEVICE>
+ <WORKING_DIR>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc</FILE>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PDEF.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\Debug\Laboratorio3.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>Laboratorio3.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>Laboratorio3.map</FILE>
+  <FILE>Laboratorio3.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <counter4bit><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>19</LINE></counter4bit>
+  <btn_prevC><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>20</LINE></btn_prevC>
+  <btn_flags><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>21</LINE></btn_flags>
+  <ticks10ms><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>22</LINE></ticks10ms>
+  <seconds_units><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>23</LINE></seconds_units>
+  <seconds_tens><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>24</LINE></seconds_tens>
+  <disp_pat1><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>25</LINE></disp_pat1>
+  <disp_pat2><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>26</LINE></disp_pat2>
+  <mux_state><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>27</LINE></mux_state>
+  <last_inc_time><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>28</LINE></last_inc_time>
+  <last_dec_time><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>29</LINE></last_dec_time>
+  <START><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>42</LINE></START>
+  <ISR_PCINT1><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>187</LINE></ISR_PCINT1>
+  <ISR_T0_COMPA><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>242</LINE></ISR_T0_COMPA>
+  <SETUP><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>49</LINE></SETUP>
+  <MAIN_LOOP><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>118</LINE></MAIN_LOOP>
+  <CHECK_DOWN><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>128</LINE></CHECK_DOWN>
+  <INC_COUNTER4><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>142</LINE></INC_COUNTER4>
+  <REFRESH><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>137</LINE></REFRESH>
+  <DEC_COUNTER4><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>149</LINE></DEC_COUNTER4>
+  <REFRESH_LEDS><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>162</LINE></REFRESH_LEDS>
+  <DEC_OK><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>155</LINE></DEC_OK>
+  <DEC_SAVE><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>157</LINE></DEC_SAVE>
+  <CHECK_D><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>216</LINE></CHECK_D>
+  <END_ISR><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>234</LINE></END_ISR>
+  <MUX><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>286</LINE></MUX>
+  <SAVE_UNITS><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>273</LINE></SAVE_UNITS>
+  <SAVE_TENS><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>271</LINE></SAVE_TENS>
+  <HEX_TO_PAT><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>330</LINE></HEX_TO_PAT>
+  <DISP2><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>305</LINE></DISP2>
+  <DISP1><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>296</LINE></DISP1>
+  <OUT_SEG><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>321</LINE></OUT_SEG>
+  <END_T><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>313</LINE></END_T>
+  <P0><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>365</LINE></P0>
+  <P1><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>367</LINE></P1>
+  <P2><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>369</LINE></P2>
+  <P3><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>371</LINE></P3>
+  <P4><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>373</LINE></P4>
+  <P5><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>375</LINE></P5>
+  <P6><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>377</LINE></P6>
+  <P7><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>379</LINE></P7>
+  <P8><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>381</LINE></P8>
+  <P9><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>383</LINE></P9>
+  <PA><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>385</LINE></PA>
+  <PB><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>387</LINE></PB>
+  <PATC><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>389</LINE></PATC>
+  <PD_><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>391</LINE></PD_>
+  <PE><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>393</LINE></PE>
+  <PF><FILE>C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm</FILE><LINE>395</LINE></PF>
+ </LABELS>
+</ASSEMBLER_INFO>

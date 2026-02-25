@@ -1,10 +1,10 @@
 
-AVRASM ver. 2.2.8  C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 2\Laboratorio 2\Laboratorio 2\main.asm Thu Feb 19 23:32:33 2026
+AVRASM ver. 2.2.8  C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm Sun Feb 22 17:08:02 2026
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 2\Laboratorio 2\Laboratorio 2\main.asm(13): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PDEF.inc'
+C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm(12): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PDEF.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
-C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio 2\Laboratorio 2\Laboratorio 2\main.asm(13): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PDEF.inc'
+C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\Laboratorios\Laboratorio3\Laboratorio3\main.asm(12): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PDEF.inc'
                                  
                                  /*
                                  
@@ -987,16 +987,15 @@ C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\La
                                  
                                  ; ***** END OF FILE ******************************************************
                                  
-                                 * Contador4bits_Timer0.asm
+                                 * Laboratorio_3.asm
                                  *
-                                 * Creado: 11-Feb-26 12:51:20 PM
+                                 * Creado: 19-Feb-26
                                  * Autor : Juan Daniel Sandoval Rodriguez
                                  * Descripcion:
-                                 *   - Timer0 sigue marcando 100ms (internamente 1ms).
-                                 *   - Contador 4 bits (PB0..PB3) incrementa cada 1s.
-                                 *   - second_counter incrementa cada 1s.
-                                 *   - Cuando second_counter == digit7seg: second_counter se reinicia y se togglea LED D12 (PB4).
-                                 *
+                                 *   - Contador manual 4 bits (LEDs) solo con botones
+                                 *   - Reloj de segundos 0..59 en dos displays 7 segmentos (unidades y decenas)
+                                 *   - 2 Displays 7 segmentos Catodo Comun con multiplex NPN
+                                 *   - Debounce de botones por software (50ms)
                                  ****************************************/
                                  .include "M328PDEF.inc"
                                  
@@ -1043,333 +1042,388 @@ C:\Users\Chichu\OneDrive\Documentos\GitHub\Programacion-de-Microcontroladores\La
                                  
                                  ; ***** END OF FILE ******************************************************
                                  
+                                 ; Constantes
+                                 .equ DEBOUNCE_TIME = 5   ; 50 ms (asumiendo ticks de 10ms)
+                                 
                                  .dseg
                                  .org SRAM_START
-000100                           counter4bit:     .byte 1
-000101                           digit7seg:       .byte 1
-000102                           btn_prev:        .byte 1
-000103                           second_counter:  .byte 1
-000104                           second_ticks:    .byte 1
-000105                           led_state:       .byte 1      ; 0x00 o (1<<PB4)
+000100                           counter4bit: .byte 1      ; contador manual para LEDs
+000101                           btn_prevC:   .byte 1      ; estado anterior de botones
+000102                           btn_flags:   .byte 1      ; flags de botones (bit0 inc, bit1 dec)
+000103                           ticks10ms:   .byte 1      ; contador de ticks de 10ms para segundos
+000104                           seconds_units: .byte 1    ; unidades de segundos (0-9)
+000105                           seconds_tens:  .byte 1    ; decenas de segundos (0-5)
+000106                           disp_pat1:    .byte 1     ; patr?n para display 1 (unidades)
+000107                           disp_pat2:    .byte 1     ; patr?n para display 2 (decenas)
+000108                           mux_state:    .byte 1     ; estado del multiplexor (0=display1, 1=display2)
+000109                           last_inc_time: .byte 1    ; ?ltimo tick de pulsaci?n incremento (debounce)
+00010a                           last_dec_time: .byte 1    ; ?ltimo tick de pulsaci?n decremento
                                  
                                  .cseg
                                  .org 0x0000
+000000 c01c                          rjmp START
                                  
-                                 /****************************************/
-                                 ; Stack
-000000 ef0f                      LDI R16, LOW(RAMEND)
-000001 bf0d                      OUT SPL, R16
-000002 e008                      LDI R16, HIGH(RAMEND)
-000003 bf0e                      OUT SPH, R16
+                                 .org 0x0008
+000008 c085                          rjmp ISR_PCINT1
                                  
-                                 /****************************************/
-                                 ; Setup
+                                 .org 0x001C
+00001c c0a9                          rjmp ISR_T0_COMPA
+                                 
+                                 ;==================== STACK ====================
+                                 START:
+00001d ef0f                          ldi r16, LOW(RAMEND)
+00001e bf0d                          out SPL, r16
+00001f e008                          ldi r16, HIGH(RAMEND)
+000020 bf0e                          out SPH, r16
+                                 
+                                 ;==================== SETUP ====================
                                  SETUP:
-                                 ; PB0..PB3 LEDs contador, PB4 LED D12
-000004 e10f                      LDI R16, 0x1F
-000005 b904                      OUT DDRB, R16
+000021 2700                          clr r16
+000022 9300 0100                     sts counter4bit, r16
+000024 9300 0102                     sts btn_flags, r16
+000026 9300 0103                     sts ticks10ms, r16
+000028 9300 0104                     sts seconds_units, r16
+00002a 9300 0105                     sts seconds_tens, r16
+00002c 9300 0108                     sts mux_state, r16
+00002e 9300 0109                     sts last_inc_time, r16
+000030 9300 010a                     sts last_dec_time, r16
                                  
-                                 ; Botones PC1/PC2 pull-up
-000006 e006                      LDI R16, (1<<PC1) | (1<<PC2)
-000007 b908                      OUT PORTC, R16
+                                 ; LEDs PB0,PB1,PB4 + EN1 PB2 + EN2 PB3
+000032 e10f                          ldi r16, 0b00011111
+000033 b904                          out DDRB, r16
                                  
-000008 b106                      IN   R16, PINC
-000009 9300 0102                 STS  btn_prev, R16
+                                 ; Segmentos PD0..PD6
+000034 e70f                          ldi r16, 0b01111111
+000035 b90a                          out DDRD, r16
                                  
-                                 ; Display 7 segmentos: D2..D7 salida
-00000b ef0c                      LDI R16, 0b11111100
-00000c b90a                      OUT DDRD, R16
+                                 ; PC2 salida (LED3), PC0 PC1 botones
+000036 e004                          ldi r16, 0b00000100
+000037 b907                          out DDRC, r16
                                  
-                                 ; PC0 (A0) salida (segmento G)
-00000d e001                      LDI R16, (1<<PC0)
-00000e b907                      OUT DDRC, R16
+                                 ; Pull-ups botones
+000038 e003                          ldi r16, 0b00000011
+000039 b908                          out PORTC, r16
                                  
-                                 ; Variables en 0
-00000f 2700                      CLR R16
-000010 9300 0100                 STS counter4bit, R16
-000012 9300 0101                 STS digit7seg, R16
-000014 9300 0103                 STS second_counter, R16
-000016 9300 0104                 STS second_ticks, R16
-000018 9300 0105                 STS led_state, R16
+                                 ; Inicializar puertos de salida a 0 (apagar todo)
+00003a 2700                          clr r16
+00003b b905                          out PORTB, r16      ; LEDs y enables apagados
+00003c b90b                          out PORTD, r16      ; segmentos apagados
+                                     ; PORTC: solo bit2 es salida, lo ponemos a 0
+00003d b108                          in r16, PORTC
+00003e 7f0b                          andi r16, 0b11111011
+00003f b908                          out PORTC, r16
                                  
-                                 ; Actualizar PORTB desde variables
-00001a 940e 0044                 CALL REFRESH_PORTB
+                                 ; Guardar estado inicial botones
+000040 b106                          in r16, PINC
+000041 9300 0101                     sts btn_prevC, r16
                                  
-                                 ; Registros auxiliares
-00001c 2711                      CLR R17
-00001d 2722                      CLR R18
-00001e 2733                      CLR R19
-00001f 2744                      CLR R20      ; R20 = contador 1ms (0..99)
+                                 ; PCINT1 habilitar
+000043 e002                          ldi r16, 0b00000010
+000044 9300 0068                     sts PCICR, r16
                                  
-                                 /****************************************/
-                                 ; TIMER0 SETUP
-                                 TIMER0_SETUP:
-000020 e002                      LDI R16, (1<<WGM01)
-000021 bd04                      OUT TCCR0A, R16
+000046 e003                          ldi r16, 0b00000011
+000047 9300 006c                     sts PCMSK1, r16
                                  
-000022 e003                      LDI R16, (1<<CS01) | (1<<CS00)   ; prescaler 64
-000023 bd05                      OUT TCCR0B, R16
+                                 ; Timer0 CTC 10ms
+000049 e000                          ldi r16, 0
+00004a bd04                          out TCCR0A, r16
                                  
-000024 e70c                      LDI R16, 124                      ; 1ms
-000025 bd07                      OUT OCR0A, R16
+00004b e002                          ldi r16, (1<<WGM01)
+00004c bd04                          out TCCR0A, r16
                                  
-000026 e002                      LDI R16, (1<<OCF0A)
-000027 bb05                      OUT TIFR0, R16
+00004d e90b                          ldi r16, 155
+00004e bd07                          out OCR0A, r16
                                  
-                                 /****************************************/
-                                 ; MAIN LOOP
+00004f 2700                          clr r16
+000050 bd06                          out TCNT0, r16
+                                 
+000051 e002                          ldi r16, (1<<OCIE0A)
+000052 9300 006e                     sts TIMSK0, r16
+                                 
+000054 e005                          ldi r16, (1<<CS02)|(1<<CS00)
+000055 bd05                          out TCCR0B, r16
+                                 
+000056 9478                          sei
+                                 
+                                 ;==================== MAIN ====================
                                  MAIN_LOOP:
-000028 940e 0038                     CALL TIMER_TICK_1MS
-00002a 940e 00de                     CALL READ_BUTTONS_EDGE
                                  
-                                     ; Si UP (bit0)
-00002c ff00                          SBRS R16, 0
-00002d c003                          RJMP CHK_DOWN2
-00002e 940e 00cb                     CALL DIGIT_UP
-000030 c004                          RJMP REFRESH
+000057 9100 0102                     lds r16, btn_flags
                                  
-                                 CHK_DOWN2:
-                                     ; Si DOWN (bit1)
-000031 ff01                          SBRS R16, 1
-000032 c002                          RJMP REFRESH
-000033 940e 00d4                     CALL DIGIT_DOWN
+000059 ff00                          sbrs r16, 0
+00005a c004                          rjmp CHECK_DOWN
+00005b 7f0e                          andi r16, 0b11111110
+00005c 9300 0102                     sts btn_flags, r16
+00005e d00a                          rcall INC_COUNTER4
+                                 
+                                 CHECK_DOWN:
+00005f 9100 0102                     lds r16, btn_flags
+                                 
+000061 ff01                          sbrs r16, 1
+000062 c004                          rjmp REFRESH
+000063 7f0d                          andi r16, 0b11111101
+000064 9300 0102                     sts btn_flags, r16
+000066 d009                          rcall DEC_COUNTER4
                                  
                                  REFRESH:
-000035 940e 007d                     CALL SHOW_DIGIT
-000037 cff0                          RJMP MAIN_LOOP
+000067 d012                          rcall REFRESH_LEDS
+000068 cfee                          rjmp MAIN_LOOP
                                  
-                                 /****************************************/
-                                 ; TIMER_TICK_1MS: cada 100ms llama UPDATE_SECOND
-                                 TIMER_TICK_1MS:
-000038 b305                      IN   R16, TIFR0
-000039 ff01                      SBRS R16, OCF0A
-00003a c008                      RJMP NO_TICK
+                                 ;==================== CONTADOR MANUAL ====================
+                                 INC_COUNTER4:
+000069 9100 0100                     lds r16, counter4bit
+00006b 9503                          inc r16
+00006c 700f                          andi r16, 0b00001111
+00006d 9300 0100                     sts counter4bit, r16
+00006f 9508                          ret
                                  
-00003b e002                      LDI  R16, (1<<OCF0A)
-00003c bb05                      OUT  TIFR0, R16
+                                 DEC_COUNTER4:
+000070 9100 0100                     lds r16, counter4bit
+000072 2300                          tst r16
+000073 f411                          brne DEC_OK
+000074 e00f                          ldi r16, 15
+000075 c001                          rjmp DEC_SAVE
+                                 DEC_OK:
+000076 950a                          dec r16
+                                 DEC_SAVE:
+000077 9300 0100                     sts counter4bit, r16
+000079 9508                          ret
                                  
-00003d 9543                      INC  R20
-00003e 3644                      CPI  R20, 100
-00003f f419                      BRNE NO_TICK
+                                 ;==================== LEDs ====================
+                                 REFRESH_LEDS:
+00007a 94f8                          cli                     ; Proteger contra interrupciones
+00007b 9100 0100                     lds r16, counter4bit
+00007d 700f                          andi r16, 0b00001111
                                  
-000040 2744                      CLR  R20
-000041 940e 0056                 CALL UPDATE_SECOND
+00007e b115                          in r17, PORTB
+00007f 7e1c                          andi r17, 0b11101100    ; Limpiar bits PB0,PB1,PB4
                                  
-                                 NO_TICK:
-000043 9508                      RET
+000080 fd00                          sbrc r16,0
+000081 6011                          ori r17,0b00000001
+000082 fd01                          sbrc r16,1
+000083 6012                          ori r17,0b00000010
+000084 fd02                          sbrc r16,2
+000085 6110                          ori r17,0b00010000
+000086 b915                          out PORTB, r17
                                  
-                                 /****************************************/
-                                 ; REFRESH_PORTB:
-                                 ; PORTB = (counter4bit & 0x0F) | (led_state & (1<<PB4))
-                                 REFRESH_PORTB:
-000044 9100 0100                     LDS  R16, counter4bit
-000046 700f                          ANDI R16, 0x0F
+000087 b128                          in r18, PORTC
+000088 7f2b                          andi r18, 0b11111011    ; Limpiar PC2
+000089 fd03                          sbrc r16,3
+00008a 6024                          ori r18, 0b00000100
+00008b b928                          out PORTC, r18
+00008c 9478                          sei
+00008d 9508                          ret
                                  
-000047 9110 0105                     LDS  R17, led_state
-000049 7110                          ANDI R17, (1<<PB4)
+                                 ;==================== ISR BOTONES ====================
+                                 ISR_PCINT1:
+00008e 930f                          push r16
+00008f 931f                          push r17
+000090 932f                          push r18
+000091 933f                          push r19
                                  
-00004a 2b01                          OR   R16, R17
-00004b b905                          OUT  PORTB, R16
-00004c 9508                          RET
+000092 b106                          in r16, PINC
+000093 9110 0101                     lds r17, btn_prevC
+000095 2f20                          mov r18, r16
+000096 2721                          eor r18, r17            ; r18 = cambios
+000097 9300 0101                     sts btn_prevC, r16
                                  
-                                 /****************************************/
-                                 ; INC_COUNTER: incrementa counter4bit y refresca PORTB
-                                 INC_COUNTER:
-00004d 9100 0100                     LDS  R16, counter4bit
-00004f 9503                          INC  R16
-000050 700f                          ANDI R16, 0x0F
-000051 9300 0100                     STS  counter4bit, R16
-000053 940e 0044                     CALL REFRESH_PORTB
-000055 9508                          RET
+                                     ; Bot?n incremento (PC0)
+000099 ff20                          sbrs r18, 0
+00009a c012                          rjmp CHECK_D
+00009b fd00                          sbrc r16, 0             ; Si est? en 0 (presionado)
+00009c c010                          rjmp CHECK_D
+                                     ; Flanco de bajada detectado
+00009d 9120 0103                     lds r18, ticks10ms      ; tiempo actual
+00009f 9130 0109                     lds r19, last_inc_time
+0000a1 1b23                          sub r18, r19
+0000a2 3025                          cpi r18, DEBOUNCE_TIME
+0000a3 f048                          brlo CHECK_D             ; Si no ha pasado el tiempo, ignorar
+0000a4 9130 0103                     lds r19, ticks10ms
+0000a6 9330 0109                     sts last_inc_time, r19   ; actualizar ?ltimo tiempo
+0000a8 9110 0102                     lds r17, btn_flags
+0000aa 6011                          ori r17, 0b00000001
+0000ab 9310 0102                     sts btn_flags, r17
                                  
-                                 /****************************************/
-                                 ; UPDATE_SECOND: se llama cada 100ms
-                                 UPDATE_SECOND:
-000056 9100 0104                     LDS  R16, second_ticks
-000058 9503                          INC  R16
-000059 300a                          CPI  R16, 10              ; 10 * 100ms = 1 segundo
-00005a f4f9                          BRNE UPDATE_SAVE_100MS
+                                 CHECK_D:
+                                     ; Bot?n decremento (PC1)
+0000ad ff21                          sbrs r18, 1
+0000ae c012                          rjmp END_ISR
+0000af fd01                          sbrc r16, 1
+0000b0 c010                          rjmp END_ISR
+                                     ; Flanco de bajada detectado
+0000b1 9120 0103                     lds r18, ticks10ms
+0000b3 9130 010a                     lds r19, last_dec_time
+0000b5 1b23                          sub r18, r19
+0000b6 3025                          cpi r18, DEBOUNCE_TIME
+0000b7 f048                          brlo END_ISR
+0000b8 9130 0103                     lds r19, ticks10ms
+0000ba 9330 010a                     sts last_dec_time, r19
+0000bc 9110 0102                     lds r17, btn_flags
+0000be 6012                          ori r17, 0b00000010
+0000bf 9310 0102                     sts btn_flags, r17
                                  
-00005b 2700                          CLR  R16                  ; Reinicia ticks (pas? 1s)
+                                 END_ISR:
+0000c1 913f                          pop r19
+0000c2 912f                          pop r18
+0000c3 911f                          pop r17
+0000c4 910f                          pop r16
+0000c5 9518                          reti
                                  
-                                     ; --- contador 4 bits cada 1s ---
-00005c 930f                          PUSH R16
-00005d 940e 004d                     CALL INC_COUNTER
-00005f 910f                          POP  R16
+                                 ;==================== ISR TIMER ====================
+                                 ISR_T0_COMPA:
+0000c6 930f                          push r16
+0000c7 931f                          push r17
+0000c8 b70f                          in r16, SREG
+0000c9 930f                          push r16
                                  
-                                     ; --- incrementar second_counter 0..15 ---
-000060 9110 0103                     LDS  R17, second_counter
-000062 9513                          INC  R17
-000063 701f                          ANDI R17, 0x0F
-000064 9310 0103                     STS  second_counter, R17
+0000ca 9100 0103                     lds r16, ticks10ms
+0000cc 9503                          inc r16
+0000cd 9300 0103                     sts ticks10ms, r16
                                  
-                                     ; --- comparar con digit7seg ---
-000066 9120 0101                     LDS  R18, digit7seg
-000068 1712                          CP   R17, R18
-000069 f469                          BRNE UPDATE_SAVE_1S
+0000cf 3604                          cpi r16, 100            ; 1 segundo?
+0000d0 f4e1                          brne MUX
                                  
-                                     ; iguales: reset second_counter
-00006a 2711                          CLR  R17
-00006b 9310 0103                     STS  second_counter, R17
+0000d1 2700                          clr r16
+0000d2 9300 0103                     sts ticks10ms, r16
                                  
-                                     ; toggle LED D12 (PB4)
-00006d 9130 0105                     LDS  R19, led_state
-00006f e160                          LDI  R22, (1<<PB4)
-000070 2736                          EOR  R19, R22
-000071 9330 0105                     STS  led_state, R19
+                                     ; Incrementar contador de segundos
+0000d4 9100 0104                     lds r16, seconds_units
+0000d6 9503                          inc r16
+0000d7 300a                          cpi r16, 10
+0000d8 f449                          brne SAVE_UNITS
+                                     ; unidades llegaron a 10
+0000d9 2700                          clr r16                 ; unidades = 0
+0000da 9110 0105                     lds r17, seconds_tens
+0000dc 9513                          inc r17
+0000dd 3016                          cpi r17, 6
+0000de f409                          brne SAVE_TENS
+                                     ; lleg? a 60, reiniciar ambos
+0000df 2711                          clr r17
+                                 SAVE_TENS:
+0000e0 9310 0105                     sts seconds_tens, r17
+                                 SAVE_UNITS:
+0000e2 9300 0104                     sts seconds_units, r16
                                  
-                                     ; aplicar el estado a PORTB (sin romper ticks)
-000073 930f                          PUSH R16
-000074 940e 0044                     CALL REFRESH_PORTB
-000076 910f                          POP  R16
+                                     ; Convertir unidades a patr?n
+0000e4 2f00                          mov r16, r16            ; ya est? en r16
+0000e5 d029                          rcall HEX_TO_PAT
+0000e6 9300 0106                     sts disp_pat1, r16
                                  
-                                 UPDATE_SAVE_1S:
-000077 9300 0104                     STS  second_ticks, R16
-000079 9508                          RET
+                                     ; Convertir decenas a patr?n
+0000e8 9100 0105                     lds r16, seconds_tens
+0000ea d024                          rcall HEX_TO_PAT
+0000eb 9300 0107                     sts disp_pat2, r16
                                  
-                                 UPDATE_SAVE_100MS:
-00007a 9300 0104                     STS  second_ticks, R16
-00007c 9508                          RET
+                                 MUX:
+                                     ; Alternar display cada 10ms
+0000ed 9100 0108                     lds r16, mux_state
+0000ef e011                          ldi r17, 0b00000001
+0000f0 2701                          eor r16, r17
+0000f1 9300 0108                     sts mux_state, r16
                                  
-                                 /****************************************/
-                                 ; SHOW_DIGIT (tu misma tabla y SHOW igual)
-                                 SHOW_DIGIT:
-00007d 9120 0101                     LDS  R18, digit7seg
+0000f3 fd00                          sbrc r16, 0
+0000f4 c008                          rjmp DISP2
                                  
-00007f 3020                          CPI  R18, 0
-000080 f0e9                          BREQ DIG0
-000081 3021                          CPI  R18, 1
-000082 f0e9                          BREQ DIG1
-000083 3022                          CPI  R18, 2
-000084 f0e9                          BREQ DIG2
-000085 3023                          CPI  R18, 3
-000086 f0e9                          BREQ DIG3
-000087 3024                          CPI  R18, 4
-000088 f0e9                          BREQ DIG4
-000089 3025                          CPI  R18, 5
-00008a f0e9                          BREQ DIG5
-00008b 3026                          CPI  R18, 6
-00008c f0e9                          BREQ DIG6
-00008d 3027                          CPI  R18, 7
-00008e f0e9                          BREQ DIG7
-00008f 3028                          CPI  R18, 8
-000090 f0e9                          BREQ DIG8
-000091 3029                          CPI  R18, 9
-000092 f0e9                          BREQ DIG9
-000093 302a                          CPI  R18, 10
-000094 f0e9                          BREQ DIGA
-000095 302b                          CPI  R18, 11
-000096 f0e9                          BREQ DIGB
-000097 302c                          CPI  R18, 12
-000098 f0e9                          BREQ DIGC
-000099 302d                          CPI  R18, 13
-00009a f0e9                          BREQ DIGD
-00009b 302e                          CPI  R18, 14
-00009c f0e9                          BREQ DIGE
-00009d c01e                          RJMP DIGF
+                                 DISP1:
+0000f5 9100 0106                     lds r16, disp_pat1
+0000f7 d011                          rcall OUT_SEG
+0000f8 b115                          in r17, PORTB
+0000f9 7f13                          andi r17, 0b11110011     ; Limpiar enables
+0000fa 6014                          ori r17, 0b00000100      ; Activar EN1 (PB2)
+0000fb b915                          out PORTB, r17
+0000fc c007                          rjmp END_T
                                  
-00009e ec00                      DIG0: ldi r16, 0b11000000  ;0
-00009f c01e                            rjmp SHOW
-0000a0 ef09                      DIG1: ldi r16, 0b11111001  ;1
-0000a1 c01c                            rjmp SHOW
-0000a2 ea04                      DIG2: ldi r16, 0b10100100  ;2
-0000a3 c01a                            rjmp SHOW
-0000a4 eb00                      DIG3: ldi r16, 0b10110000  ;3
-0000a5 c018                            rjmp SHOW
-0000a6 e909                      DIG4: ldi r16, 0b10011001  ;4
-0000a7 c016                            rjmp SHOW
-0000a8 e902                      DIG5: ldi r16, 0b10010010  ;5
-0000a9 c014                            rjmp SHOW
-0000aa e802                      DIG6: ldi r16, 0b10000010  ;6
-0000ab c012                            rjmp SHOW
-0000ac ef08                      DIG7: ldi r16, 0b11111000  ;7
-0000ad c010                            rjmp SHOW
-0000ae e800                      DIG8: ldi r16, 0b10000000  ;8
-0000af c00e                            rjmp SHOW
-0000b0 e900                      DIG9: ldi r16, 0b10010000  ;9
-0000b1 c00c                            rjmp SHOW
-0000b2 e808                      DIGA: ldi r16, 0b10001000  ;A
-0000b3 c00a                            rjmp SHOW
-0000b4 e803                      DIGB: ldi r16, 0b10000011  ;B
-0000b5 c008                            rjmp SHOW
-0000b6 ec06                      DIGC: ldi r16, 0b11000110  ;C
-0000b7 c006                            rjmp SHOW
-0000b8 ea01                      DIGD: ldi r16, 0b10100001  ;D
-0000b9 c004                            rjmp SHOW
-0000ba e806                      DIGE: ldi r16, 0b10000110  ;E
-0000bb c002                            rjmp SHOW
-0000bc e80e                      DIGF: ldi r16, 0b10001110  ;F
-0000bd c000                            rjmp SHOW
+                                 DISP2:
+0000fd 9100 0107                     lds r16, disp_pat2
+0000ff d009                          rcall OUT_SEG
+000100 b115                          in r17, PORTB
+000101 7f13                          andi r17, 0b11110011
+000102 6018                          ori r17, 0b00001000      ; Activar EN2 (PB3)
+000103 b915                          out PORTB, r17
                                  
-                                 SHOW:
-                                     ; G (bit6) -> PC0
-0000be ff06                          SBRS R16, 6
-0000bf 9840                          CBI  PORTC, PC0
-0000c0 fd06                          SBRC R16, 6
-0000c1 9a40                          SBI  PORTC, PC0
+                                 END_T:
+000104 910f                          pop r16
+000105 bf0f                          out SREG, r16
+000106 911f                          pop r17
+000107 910f                          pop r16
+000108 9518                          reti
                                  
-                                     ; A..F (bits0..5) -> PORTD D2..D7
-0000c2 b12b                          IN   R18, PORTD
-0000c3 7023                          ANDI R18, 0b00000011
+                                 ;==================== SEGMENTOS ====================
+                                 OUT_SEG:
+000109 770f                          andi r16, 0b01111111    ; Asegurar que el bit7 (PD7) no se use
+00010a b11b                          in r17, PORTD
+00010b 7810                          andi r17, 0b10000000    ; Conservar solo PD7 (no usado)
+00010c 2b10                          or r17, r16
+00010d b91b                          out PORTD, r17
+00010e 9508                          ret
                                  
-0000c4 2f30                          MOV  R19, R16
-0000c5 733f                          ANDI R19, 0b00111111
+                                 ;==================== TABLA HEX ====================
+                                 HEX_TO_PAT:
+00010f 700f                          andi r16, 0b00001111
                                  
-0000c6 0f33                          LSL  R19
-0000c7 0f33                          LSL  R19
+000110 3000                          cpi r16, 0
+000111 f0e9                          breq P0
+000112 3001                          cpi r16, 1
+000113 f0e9                          breq P1
+000114 3002                          cpi r16, 2
+000115 f0e9                          breq P2
+000116 3003                          cpi r16, 3
+000117 f0e9                          breq P3
+000118 3004                          cpi r16, 4
+000119 f0e9                          breq P4
+00011a 3005                          cpi r16, 5
+00011b f0e9                          breq P5
+00011c 3006                          cpi r16, 6
+00011d f0e9                          breq P6
+00011e 3007                          cpi r16, 7
+00011f f0e9                          breq P7
+000120 3008                          cpi r16, 8
+000121 f0e9                          breq P8
+000122 3009                          cpi r16, 9
+000123 f0e9                          breq P9
+000124 300a                          cpi r16, 10
+000125 f0e9                          breq PA
+000126 300b                          cpi r16, 11
+000127 f0e9                          breq PB
+000128 300c                          cpi r16, 12
+000129 f0e9                          breq PATC
+00012a 300d                          cpi r16, 13
+00012b f0e9                          breq PD_
+00012c 300e                          cpi r16, 14
+00012d f0e9                          breq PE
+00012e c01e                          rjmp PF
                                  
-0000c8 2b23                          OR   R18, R19
-0000c9 b92b                          OUT  PORTD, R18
-0000ca 9508                          RET
-                                 
-                                 /****************************************/
-                                 ; Botones
-                                 DIGIT_UP:
-0000cb 9120 0101                     LDS  R18, digit7seg
-0000cd 9523                          INC  R18
-0000ce 3120                          CPI  R18, 16
-0000cf f008                          BRLO UP_OK
-0000d0 2722                          CLR  R18
-                                 UP_OK:
-0000d1 9320 0101                     STS  digit7seg, R18
-0000d3 9508                          RET
-                                 
-                                 DIGIT_DOWN:
-0000d4 9120 0101                     LDS  R18, digit7seg
-0000d6 2322                          TST  R18
-0000d7 f411                          BRNE DOWN_DEC
-0000d8 e02f                          LDI  R18, 15
-0000d9 c001                          RJMP DOWN_SAVE
-                                 DOWN_DEC:
-0000da 952a                          DEC  R18
-                                 DOWN_SAVE:
-0000db 9320 0101                     STS  digit7seg, R18
-0000dd 9508                          RET
-                                 
-                                 READ_BUTTONS_EDGE:
-0000de b126                          IN   R18, PINC
-0000df 9130 0102                     LDS  R19, btn_prev
-                                 
-0000e1 2700                          CLR  R16
-                                 
-                                     ; UP (PC1)
-0000e2 ff31                          SBRS R19, PC1
-0000e3 c003                          RJMP CHK_DOWN
-0000e4 fd21                          SBRC R18, PC1
-0000e5 c001                          RJMP CHK_DOWN
-0000e6 6001                          ORI  R16, 1<<0
-                                 
-                                 CHK_DOWN:
-                                     ; DOWN (PC2)
-0000e7 ff32                          SBRS R19, PC2
-0000e8 c003                          RJMP SAVE
-0000e9 fd22                          SBRC R18, PC2
-0000ea c001                          RJMP SAVE
-0000eb 6002                          ORI  R16, 1<<1
-                                 
-                                 SAVE:
-0000ec 9320 0102                     STS  btn_prev, R18
-0000ee 9508                          RET
+00012f e30f                      P0: ldi r16, 0b00111111 ;0
+000130 9508                          ret
+000131 e006                      P1: ldi r16, 0b00000110 ;1
+000132 9508                          ret
+000133 e50b                      P2: ldi r16, 0b01011011 ;2
+000134 9508                          ret
+000135 e40f                      P3: ldi r16, 0b01001111 ;3
+000136 9508                          ret
+000137 e606                      P4: ldi r16, 0b01100110 ;4
+000138 9508                          ret
+000139 e60d                      P5: ldi r16, 0b01101101 ;5
+00013a 9508                          ret
+00013b e70d                      P6: ldi r16, 0b01111101 ;6
+00013c 9508                          ret
+00013d e007                      P7: ldi r16, 0b00000111 ;7
+00013e 9508                          ret
+00013f e70f                      P8: ldi r16, 0b01111111 ;8
+000140 9508                          ret
+000141 e60f                      P9: ldi r16, 0b01101111 ;9
+000142 9508                          ret
+000143 e707                      PA: ldi r16, 0b01110111 ;A
+000144 9508                          ret
+000145 e70c                      PB: ldi r16, 0b01111100 ;b
+000146 9508                          ret
+000147 e309                      PATC: ldi r16, 0b00111001 ;C
+000148 9508                          ret
+000149 e50e                      PD_: ldi r16, 0b01011110 ;d
+00014a 9508                          ret
+00014b e709                      PE: ldi r16, 0b01111001 ;E
+00014c 9508                          ret
+00014d e701                      PF: ldi r16, 0b01110001 ;F
 
 
 RESOURCE USE INFORMATION
@@ -1389,38 +1443,38 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  74 r17:  11 r18:  37 r19:  12 r20:   4 
-r21:   0 r22:   2 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r13:   0 r14:   0 r15:   0 r16: 137 r17:  37 r18:  16 r19:  10 r20:   0 
+r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:   0 r31:   0 
-Registers used: 6 out of 35 (17.1%)
+Registers used: 4 out of 35 (11.4%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
-andi  :   6 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+andi  :  12 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :  15 brge  :   0 brhc  :   0 
-brhs  :   0 brid  :   0 brie  :   0 brlo  :   1 brlt  :   0 brmi  :   0 
+brhs  :   0 brid  :   0 brie  :   0 brlo  :   2 brlt  :   0 brmi  :   0 
 brne  :   4 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :  10 cbi   :   1 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :  10 cls   :   0 
-clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   1 cpc   :   0 
-cpi   :  18 cpse  :   0 dec   :   1 eor   :   1 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   4 inc   :   5 jmp   :   0 
-ld    :   0 ldd   :   0 ldi   :  29 lds   :  11 lpm   :   0 lsl   :   2 
-lsr   :   0 mov   :   1 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   0 or    :   2 ori   :   2 out   :  13 pop   :   2 
-push  :   2 rcall :   0 ret   :   9 reti  :   0 rjmp  :  27 rol   :   0 
-ror   :   0 sbc   :   0 sbci  :   0 sbi   :   1 sbic  :   0 sbis  :   0 
-sbiw  :   0 sbr   :   0 sbrc  :   3 sbrs  :   6 sec   :   0 seh   :   0 
-sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :  15 
-sub   :   0 subi  :   0 swap  :   0 tst   :   1 wdr   :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
+clc   :   0 clh   :   0 cli   :   1 cln   :   0 clr   :   6 cls   :   0 
+clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
+cpi   :  20 cpse  :   0 dec   :   1 eor   :   2 fmul  :   0 fmuls :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   9 inc   :   4 jmp   :   0 
+ld    :   0 ldd   :   0 ldi   :  31 lds   :  21 lpm   :   0 lsl   :   0 
+lsr   :   0 mov   :   2 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+neg   :   0 nop   :   0 or    :   1 ori   :   8 out   :  20 pop   :   7 
+push  :   7 rcall :   7 ret   :  20 reti  :   2 rjmp  :  14 rol   :   0 
+ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
+sbiw  :   0 sbr   :   0 sbrc  :   7 sbrs  :   4 sec   :   0 seh   :   0 
+sei   :   2 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
+sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :  28 
+sub   :   2 subi  :   0 swap  :   0 tst   :   1 wdr   :   0 
 Instructions used: 29 out of 113 (25.7%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0001de    478      0    478   32768   1.5%
-[.dseg] 0x000100 0x000106      0      6      6    2048   0.3%
+[.cseg] 0x000000 0x00029e    618      0    618   32768   1.9%
+[.dseg] 0x000100 0x00010b      0     11     11    2048   0.5%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
 Assembly complete, 0 errors, 0 warnings
