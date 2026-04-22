@@ -284,18 +284,23 @@ uint16_t adc_read(void)
 
 void display_init(void)
 {
+	// Pines de segmentos (nibble bajo) en PB2..PB5
 	DDRB |= (1 << PB2) | (1 << PB3) | (1 << PB4) | (1 << PB5);
  180:	84 b1       	in	r24, 0x04	; 4
  182:	8c 63       	ori	r24, 0x3C	; 60
  184:	84 b9       	out	0x04, r24	; 4
+	// Pines de segmentos (nibble alto) en PC1..PC3
 	DDRC |= (1 << PC1) | (1 << PC2) | (1 << PC3);
  186:	87 b1       	in	r24, 0x07	; 7
  188:	8e 60       	ori	r24, 0x0E	; 14
  18a:	87 b9       	out	0x07, r24	; 7
+	// Pines de selecci?n de d?gito en PC4 y PC5
 	DDRC |= (1 << PC4) | (1 << PC5);
  18c:	87 b1       	in	r24, 0x07	; 7
  18e:	80 63       	ori	r24, 0x30	; 48
  190:	87 b9       	out	0x07, r24	; 7
+
+	// Estado inicial: todos apagados (asumiendo c?todo com?n, con 1 = apagado)
 	PORTB |= (1 << PB2) | (1 << PB3) | (1 << PB4) | (1 << PB5);
  192:	85 b1       	in	r24, 0x05	; 5
  194:	8c 63       	ori	r24, 0x3C	; 60
