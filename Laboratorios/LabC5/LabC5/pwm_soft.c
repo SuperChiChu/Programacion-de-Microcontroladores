@@ -10,9 +10,9 @@ void pwm_soft_init(void)
 
 	// Timer0 CTC
 	TCCR0A = (1 << WGM01);
-	TCCR0B = (1 << CS01) | (1 << CS00); // prescaler 64
+	TCCR0B = (1 << CS01); // prescaler 8
 
-	OCR0A = 249; // 1 ms
+	OCR0A = 124; // 1 ms
 
 	TIMSK0 |= (1 << OCIE0A); // habilitar interrupci?n
 
